@@ -1360,4 +1360,4 @@ def main():
 
 
 if __name__ == "__main__":
-    sys.exit(_getConfigPath())
+    sys.exit(main())
