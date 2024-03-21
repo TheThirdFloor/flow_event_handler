@@ -1,8 +1,9 @@
 import json
+import sys
 from pathlib import Path
 from typing import Optional
 
-CONFIG_PATH = "config.json"
+CONFIG_FILENAME = "config.json"
 
 class EventConfigError(Exception):
     pass
@@ -359,7 +360,8 @@ def getConfigPath():
 
     """
 
-    config_path = Path(CONFIG_PATH)
+    script_path = Path(sys.argv[0])
+    config_path = script_path.parent / CONFIG_FILENAME
     config_path = config_path.resolve()
 
     if config_path.exists():
@@ -369,10 +371,9 @@ def getConfigPath():
         msg = msg.format(config_path=config_path.absolute())
         raise EventConfigError(msg)
 
-def main():
+def test():
 
-    config_path = "config.json"
-    config = Config(config_path)
+    config = Config(getConfigPath())
 
     attrs_test = [
         'service_name',
@@ -420,4 +421,4 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    test()
