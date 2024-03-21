@@ -367,7 +367,7 @@ def getConfigPath():
     else:
         msg = "Could not find config path at [{config_path}]"
         msg = msg.format(config_path=config_path.absolute())
-        raise EventDaemonError(msg)
+        raise EventConfigError(msg)
 
 def main():
 
