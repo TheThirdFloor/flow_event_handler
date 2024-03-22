@@ -385,14 +385,16 @@ class Config(object):
 
         for key, value in self.service.items():
             if isinstance(value, str) and value.startswith('..'):
-                path = Path(__file__ + value)
+                script_dir = Path(__file__).parent
+                path = script_dir / value
                 path = path.resolve()
                 self.service[key] = str(path).replace('\\', '/')
 
         fix_paths = []
         for path in self.plugins['paths']:
             if isinstance(path, str) and path.startswith('..'):
-                abs_path = Path(__file__ + path)
+                script_dir = Path(__file__).parent
+                abs_path = script_dir / path
                 abs_path = abs_path.resolve()
                 fix_paths.append(str(abs_path).replace('\\', '/'))
             else:
@@ -467,6 +469,9 @@ def test():
         msg = "Testing [{method}]: {result}"
         msg = msg.format(method=method, result=attr())
         print(msg)
+
+    from pprint import pprint as pp
+    pp(config.data)
 
 
 
