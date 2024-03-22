@@ -72,8 +72,14 @@ class Config(object):
         """
 
         config_value = self.service.get('log_dir')
-        log_dir = Path(config_value)
-        return log_dir.resolve()
+        script_dir = Path(__file__)
+
+        if config_value.startswith('/.') or config_value.startswith('\\.'):
+            abs_path = Path(str(script_dir) + config_value).resolve()
+        else:
+            abs_path = Path(config_value).resolve()
+
+        return abs_path
 
     @property
     def service_name(self) -> str:
@@ -202,15 +208,39 @@ class Config(object):
         filename = config_value.format(service_name=self.service_name)
         return str(self.log_dir / filename).replace('\\', '/')
 
+    def getPluginPathlibPaths(self) -> list:
+        """
+        List of paths where the framework should look for plugins to load
+
+        """
+
+        script_dir = Path(__file__)
+        paths = self.plugins.get('paths', [])
+        abs_paths = []
+
+        for path in paths:
+            if path.startswith('/.') or path.startswith('\\.'):
+                abs_path = Path(str(script_dir) + path).resolve()
+            else:
+                abs_path = Path(path).resolve()
+
+            abs_paths.append(abs_path)
+
+        return abs_paths
+
     def getPluginPaths(self) -> list:
         """
         List of paths where the framework should look for plugins to load
 
         """
 
-        paths = self.plugins.get('paths', [])
-        abs_paths = [Path(path).resolve() for path in paths]
-        return [str(path).replace('\\', '/') for path in abs_paths]
+        abs_paths = self.getPluginPathlibPaths()
+        abs_paths_strs = []
+
+        for path in abs_paths:
+            abs_paths_strs.append(str(path).replace('\\','/'))
+
+        return abs_paths_strs
 
     def getSMTPServer(self) -> str:
         """
@@ -396,6 +426,7 @@ def test():
         'getEngineProxyServer',
         'getEventIdFile',
         'getEnginePIDFile',
+        'getPluginPathlibPaths',
         'getPluginPaths',
         'getSMTPServer',
         'getSMTPPort',

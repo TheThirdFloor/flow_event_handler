@@ -1340,7 +1340,15 @@ def main():
     if len(sys.argv) > 1:
         action = sys.argv[1]
 
-    if sys.platform == "win32" and action != "foreground":
+    if action == "install":
+        if not CONFIG.log_dir.exists():
+            CONFIG.log_dir.mkdir(parents=True, exist_ok=True)
+
+        for path in CONFIG.getPluginPathlibPaths():
+            if not path.exists():
+                path.mkdir(parents=True, exist_ok=True)
+
+    if action and sys.platform == "win32" and action != "foreground":
         win32serviceutil.HandleCommandLine(WindowsService)
         return 0
 
