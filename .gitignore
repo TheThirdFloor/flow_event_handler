@@ -3,3 +3,4 @@ shotgunEventDaemon.conf
 *.pyc
 .idea
 config.json
+setup.json

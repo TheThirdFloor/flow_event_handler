@@ -1,0 +1,41 @@
+{
+  "service": {
+    "name": "ttfsecure_event_handler",
+    "description": "ttfsecure_event_handler",
+    "pid_filename": "{service_name}.pid",
+    "event_id_filename": "{service_name}.id",
+    "log_mode": 1,
+    "log_dir": "C:/Users/jacobmed/PycharmProjects/flow/logs",
+    "log_filename": "{service_name}.log",
+    "log_level": "20",
+    "timing_log": "on",
+    "conn_retry_sleep": 60,
+    "max_conn_retries": 5,
+    "fetch_interval": 5,
+    "max_event_batch_size": 500
+  },
+  "flow": {
+    "server": "https://server.com",
+    "script_name": "ttf-lax-sgeh03-event-handler",
+    "script_key": "script_key",
+    "proxy_server": "",
+    "use_session_uuid": true
+  },
+  "plugins": {
+    "paths": [
+      "C:/Users/jacobmed/PycharmProjects/flow/plugins"
+    ]
+  },
+  "email": {
+    "server": "smtp.yourdomain.com",
+    "port": 587,
+    "use_tls": true,
+    "username": "username",
+    "password": "password",
+    "from": "support@yourdomain.com",
+    "to": [
+      "you@yourdomain.com"
+    ],
+    "subject": "{server} - {script_name} - Flow Event Handler"
+  }
+}
