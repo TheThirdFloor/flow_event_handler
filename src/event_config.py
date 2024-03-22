@@ -360,7 +360,7 @@ def getConfigPath():
 
     """
 
-    script_path = Path(sys.argv[0])
+    script_path = Path(__file__)
     config_path = script_path.parent / CONFIG_FILENAME
     config_path = config_path.resolve()
 
