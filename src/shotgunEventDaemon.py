@@ -1341,12 +1341,18 @@ def main():
         action = sys.argv[1]
 
     if action == "install":
+        print("Resovling paths...")
         CONFIG.resolve_paths()
+
+        print("Checking Log Dir %s..." % str(CONFIG.log_dir))
         if not CONFIG.log_dir.exists():
+            print("Creating Log Dir at %s" % str(CONFIG.log_dir))
             CONFIG.log_dir.mkdir(parents=True, exist_ok=True)
 
         for path in CONFIG.plugin_pathlib_paths:
+            print("Checking Plugin Path %s" % str(path))
             if not path.exists():
+                print("Creating Plugin Path %s" % str(path))
                 path.mkdir(parents=True, exist_ok=True)
 
     if action and sys.platform == "win32" and action != "foreground":
