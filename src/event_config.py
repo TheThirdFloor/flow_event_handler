@@ -425,7 +425,19 @@ def test():
 
     config = Config(getConfigPath())
 
+    print("Resovling paths...")
     config.resolve_paths()
+
+    print("Checking Log Dir %s..." % str(config.log_dir))
+    if not config.log_dir.exists():
+        print("Creating Log Dir at %s" % str(config.log_dir))
+        config.log_dir.mkdir(parents=True, exist_ok=True)
+
+    for path in config.plugin_pathlib_paths:
+        print("Checking Plugin Path %s" % str(path))
+        if not path.exists():
+            print("Creating Plugin Path %s" % str(path))
+            path.mkdir(parents=True, exist_ok=True)
 
     attrs_test = [
         'service_name',
