@@ -3,6 +3,7 @@ import sys
 from pathlib import Path
 from typing import Optional
 
+SETUP_FILENAME = "setup.json"
 CONFIG_FILENAME = "config.json"
 
 class EventConfigError(Exception):
@@ -152,13 +153,7 @@ class Config(object):
         return self.flow.get('use_session_uuid')
 
     def read(self, path) -> None:
-        with open(path, "r+") as json_f:
-            self._data = json.load(json_f)
-
-    def write_json(self):
-
-        with open(self._path, "w") as json_f:
-            json.dump(self._data, json_f, indent=2)
+        self._data = read_json(path)
 
     def getShotgunURL(self) -> str:
         """
@@ -375,37 +370,20 @@ class Config(object):
         else:
             return None
 
-    def resolve_paths(self):
-        """
-        The Windows service using the location of the executable when it tries
-        to resolve paths.  So to make it simple, we'll just look for relative
-        paths in the config and resolve them, then rewrite the config.  This
-        should only be run in the install phase.
+def read_json(file_path) -> dict:
+    with open(file_path, "r+") as json_f:
+        data = json.load(json_f)
 
-        """
+    return data
 
-        for key, value in self.service.items():
-            if isinstance(value, str) and value.startswith('..'):
-                script_dir = Path(__file__).parent
-                path = script_dir / value
-                path = path.resolve()
-                self.service[key] = str(path).replace('\\', '/')
+def write_config(data) -> None:
+    config_path = getConfigPath()
 
-        fix_paths = []
-        for path in self.plugins['paths']:
-            if isinstance(path, str) and path.startswith('..'):
-                script_dir = Path(__file__).parent
-                abs_path = script_dir / path
-                abs_path = abs_path.resolve()
-                fix_paths.append(str(abs_path).replace('\\', '/'))
-            else:
-                fix_paths.append(path)
-        self.plugins['paths'] = fix_paths
-
-        self.write_json()
+    with open(config_path, "w") as json_f:
+        json.dump(data, json_f, indent=2)
 
 
-def getConfigPath():
+def getConfigPath() -> str:
     """
     Find the config path relative to this file defined by top level constant
 
@@ -415,19 +393,44 @@ def getConfigPath():
     config_path = script_path.parent / CONFIG_FILENAME
     config_path = config_path.resolve()
 
-    if config_path.exists():
-        return str(config_path)
-    else:
-        msg = "Could not find config path at [{config_path}]"
-        msg = msg.format(config_path=config_path.absolute())
-        raise EventConfigError(msg)
+    return str(config_path)
 
-def test():
+def setup() -> None:
+    """
+    Take the values from the setup.json and expand any relative paths. Then
+    save the new json out as config.json
+
+    """
+
+    script_dir = Path(__file__).parent
+    setup_filepath = script_dir / SETUP_FILENAME
+    print(setup_filepath)
+
+    data = read_json(setup_filepath)
+
+    for key, value in data['service'].items():
+        if isinstance(value, str) and value.startswith('..'):
+            path = script_dir / value
+            path = path.resolve()
+            data['service'][key] = str(path).replace('\\', '/')
+
+    fix_paths = []
+    for path in data['plugins']['paths']:
+        if isinstance(path, str) and path.startswith('..'):
+            abs_path = script_dir / path
+            abs_path = abs_path.resolve()
+            fix_paths.append(str(abs_path).replace('\\', '/'))
+        else:
+            fix_paths.append(path)
+    data['plugins']['paths'] = fix_paths
+    write_config(data=data)
+
+def test(do_setup=True):
+
+    if do_setup:
+        setup()
 
     config = Config(getConfigPath())
-
-    print("Resovling paths...")
-    config.resolve_paths()
 
     print("Checking Log Dir %s..." % str(config.log_dir))
     if not config.log_dir.exists():
