@@ -370,11 +370,13 @@ class Config(object):
         else:
             return None
 
+
 def read_json(file_path) -> dict:
     with open(file_path, "r+") as json_f:
         data = json.load(json_f)
 
     return data
+
 
 def write_config(data) -> None:
     config_path = getConfigPath()
@@ -490,8 +492,5 @@ def test(do_setup=True):
     pp(config.data)
 
 
-
-
-
 if __name__ == "__main__":
-    test()
+    test(do_setup=True)
