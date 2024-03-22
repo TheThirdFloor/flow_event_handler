@@ -1341,25 +1341,11 @@ def main():
         action = sys.argv[1]
 
     if action == "install":
-        print("Resovling paths...")
-        CONFIG.resolve_paths()
+        # Do this before installing the service, but the install command also
+        # passes through to the service below
+        event_config.setup()
 
-        print("Checking Log Dir %s..." % str(CONFIG.log_dir))
-        if not CONFIG.log_dir.exists():
-            print("Creating Log Dir at %s" % str(CONFIG.log_dir))
-            CONFIG.log_dir.mkdir(parents=True, exist_ok=True)
-
-        for path in CONFIG.plugin_pathlib_paths:
-            print("Checking Plugin Path %s" % str(path))
-            if not path.exists():
-                print("Creating Plugin Path %s" % str(path))
-                path.mkdir(parents=True, exist_ok=True)
-
-    if action and sys.platform == "win32" and action != "foreground":
-        win32serviceutil.HandleCommandLine(WindowsService)
-        return 0
-
-    if action:
+    if action == "foreground":
         daemon = LinuxDaemon()
 
         # Find the function to call on the daemon and call it
@@ -1369,6 +1355,10 @@ def main():
             return 0
 
         print("Unknown command: %s" % action)
+
+    elif not action == "foreground":
+        win32serviceutil.HandleCommandLine(WindowsService)
+        return 0
 
     print("usage: %s start|stop|restart|foreground" % sys.argv[0])
     return 2

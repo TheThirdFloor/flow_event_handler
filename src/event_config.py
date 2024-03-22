@@ -425,14 +425,8 @@ def setup() -> None:
         else:
             fix_paths.append(path)
     data['plugins']['paths'] = fix_paths
+
     write_config(data=data)
-
-def test(do_setup=True):
-
-    if do_setup:
-        setup()
-
-    config = Config(getConfigPath())
 
     print("Checking Log Dir %s..." % str(config.log_dir))
     if not config.log_dir.exists():
@@ -444,6 +438,15 @@ def test(do_setup=True):
         if not path.exists():
             print("Creating Plugin Path %s" % str(path))
             path.mkdir(parents=True, exist_ok=True)
+
+def test(do_setup=True):
+
+    if do_setup:
+        setup()
+
+    config = Config(getConfigPath())
+
+
 
     attrs_test = [
         'service_name',
