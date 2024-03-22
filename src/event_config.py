@@ -72,10 +72,11 @@ class Config(object):
         """
 
         config_value = self.service.get('log_dir')
-        script_dir = Path(__file__)
+        script_dir = Path(__file__).parent
 
-        if config_value.startswith('/.') or config_value.startswith('\\.'):
-            abs_path = Path(str(script_dir) + config_value).resolve()
+        if config_value.startswith('.'):
+            abs_path = script_dir / config_value
+            abs_path = abs_path.resolve()
         else:
             abs_path = Path(config_value).resolve()
 
