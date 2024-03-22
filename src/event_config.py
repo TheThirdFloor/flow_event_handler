@@ -95,6 +95,17 @@ class Config(object):
         return name
 
     @property
+    def plugin_pathlib_paths(self):
+
+        paths = []
+        config_paths = self.getPluginPaths()
+        for path in config_paths:
+            path_obj = Path(path)
+            paths.append(path_obj)
+
+        return paths
+
+    @property
     def conn_retry_sleep(self) -> int:
         """
         If the connection to shotgun fails, number of seconds to wait until we
@@ -142,6 +153,11 @@ class Config(object):
     def read(self, path) -> None:
         with open(path, "r+") as json_f:
             self._data = json.load(json_f)
+
+    def write_json(self):
+
+        with open(self._path, "w") as json_f:
+            json.dump(self._data, json_f, indent=2)
 
     def getShotgunURL(self) -> str:
         """
@@ -208,39 +224,13 @@ class Config(object):
         filename = config_value.format(service_name=self.service_name)
         return str(self.log_dir / filename).replace('\\', '/')
 
-    def getPluginPathlibPaths(self) -> list:
-        """
-        List of paths where the framework should look for plugins to load
-
-        """
-
-        script_dir = Path(__file__)
-        paths = self.plugins.get('paths', [])
-        abs_paths = []
-
-        for path in paths:
-            if path.startswith('/.') or path.startswith('\\.'):
-                abs_path = Path(str(script_dir) + path).resolve()
-            else:
-                abs_path = Path(path).resolve()
-
-            abs_paths.append(abs_path)
-
-        return abs_paths
-
     def getPluginPaths(self) -> list:
         """
         List of paths where the framework should look for plugins to load
 
         """
 
-        abs_paths = self.getPluginPathlibPaths()
-        abs_paths_strs = []
-
-        for path in abs_paths:
-            abs_paths_strs.append(str(path).replace('\\','/'))
-
-        return abs_paths_strs
+        return self.plugins['paths']
 
     def getSMTPServer(self) -> str:
         """
@@ -384,6 +374,34 @@ class Config(object):
         else:
             return None
 
+    def resolve_paths(self):
+        """
+        The Windows service using the location of the executable when it tries
+        to resolve paths.  So to make it simple, we'll just look for relative
+        paths in the config and resolve them, then rewrite the config.  This
+        should only be run in the install phase.
+
+        """
+
+        for key, value in self.service.items():
+            if isinstance(value, str) and value.startswith('..'):
+                path = Path(__file__ + value)
+                path = path.resolve()
+                self.service[key] = str(path).replace('\\', '/')
+
+        fix_paths = []
+        for path in self.plugins['paths']:
+            if isinstance(path, str) and path.startswith('..'):
+                abs_path = Path(__file__ + path)
+                abs_path = abs_path.resolve()
+                fix_paths.append(str(abs_path).replace('\\', '/'))
+            else:
+                fix_paths.append(path)
+        self.plugins['paths'] = fix_paths
+
+        self.write_json()
+
+
 def getConfigPath():
     """
     Find the config path relative to this file defined by top level constant
@@ -404,6 +422,8 @@ def getConfigPath():
 def test():
 
     config = Config(getConfigPath())
+
+    config.resolve_paths()
 
     attrs_test = [
         'service_name',
@@ -426,7 +446,6 @@ def test():
         'getEngineProxyServer',
         'getEventIdFile',
         'getEnginePIDFile',
-        'getPluginPathlibPaths',
         'getPluginPaths',
         'getSMTPServer',
         'getSMTPPort',
@@ -448,6 +467,8 @@ def test():
         msg = "Testing [{method}]: {result}"
         msg = msg.format(method=method, result=attr())
         print(msg)
+
+
 
 
 

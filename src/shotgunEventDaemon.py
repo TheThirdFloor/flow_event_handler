@@ -1341,10 +1341,11 @@ def main():
         action = sys.argv[1]
 
     if action == "install":
+        CONFIG.resolve_paths()
         if not CONFIG.log_dir.exists():
             CONFIG.log_dir.mkdir(parents=True, exist_ok=True)
 
-        for path in CONFIG.getPluginPathlibPaths():
+        for path in CONFIG.plugin_pathlib_paths:
             if not path.exists():
                 path.mkdir(parents=True, exist_ok=True)
 
