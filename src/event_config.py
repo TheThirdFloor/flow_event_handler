@@ -1,9 +1,9 @@
 import json
+import os.path
 import sys
 from pathlib import Path
 from typing import Optional
 
-SETUP_FILENAME = "setup.json"
 CONFIG_FILENAME = "config.json"
 
 class EventConfigError(Exception):
@@ -372,17 +372,16 @@ class Config(object):
 
 
 def read_json(file_path) -> dict:
+
+    if not Path(file_path).exists():
+        msg = "Path [{path}] does not exist!"
+        msg = msg.format(path=file_path)
+        raise EventConfigError(msg)
+
     with open(file_path, "r+") as json_f:
         data = json.load(json_f)
 
     return data
-
-
-def write_config(data) -> None:
-    config_path = getConfigPath()
-
-    with open(config_path, "w") as json_f:
-        json.dump(data, json_f, indent=2)
 
 
 def getConfigPath() -> str:
@@ -397,56 +396,10 @@ def getConfigPath() -> str:
 
     return str(config_path)
 
-def setup() -> None:
-    """
-    Take the values from the setup.json and expand any relative paths. Then
-    save the new json out as config.json
 
-    """
-
-    script_dir = Path(__file__).parent
-    setup_filepath = script_dir / SETUP_FILENAME
-    print(setup_filepath)
-
-    data = read_json(setup_filepath)
-
-    for key, value in data['service'].items():
-        if isinstance(value, str) and value.startswith('..'):
-            path = script_dir / value
-            path = path.resolve()
-            data['service'][key] = str(path).replace('\\', '/')
-
-    fix_paths = []
-    for path in data['plugins']['paths']:
-        if isinstance(path, str) and path.startswith('..'):
-            abs_path = script_dir / path
-            abs_path = abs_path.resolve()
-            fix_paths.append(str(abs_path).replace('\\', '/'))
-        else:
-            fix_paths.append(path)
-    data['plugins']['paths'] = fix_paths
-
-    write_config(data=data)
-
-    print("Checking Log Dir %s..." % str(config.log_dir))
-    if not config.log_dir.exists():
-        print("Creating Log Dir at %s" % str(config.log_dir))
-        config.log_dir.mkdir(parents=True, exist_ok=True)
-
-    for path in config.plugin_pathlib_paths:
-        print("Checking Plugin Path %s" % str(path))
-        if not path.exists():
-            print("Creating Plugin Path %s" % str(path))
-            path.mkdir(parents=True, exist_ok=True)
-
-def test(do_setup=True):
-
-    if do_setup:
-        setup()
+def test():
 
     config = Config(getConfigPath())
-
-
 
     attrs_test = [
         'service_name',
@@ -496,4 +449,4 @@ def test(do_setup=True):
 
 
 if __name__ == "__main__":
-    test(do_setup=True)
+    test()

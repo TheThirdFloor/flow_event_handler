@@ -1333,17 +1333,15 @@ def _getConfigPath():
 
     return CONFIG.path
 
-def main():
+
+
+
+
+def main(action=None):
     """ """
 
-    action = None
     if len(sys.argv) > 1:
         action = sys.argv[1]
-
-    if action == "install":
-        # Do this before installing the service, but the install command also
-        # passes through to the service below
-        event_config.setup()
 
     if action == "foreground":
         daemon = LinuxDaemon()
@@ -1356,7 +1354,7 @@ def main():
 
         print("Unknown command: %s" % action)
 
-    elif not action == "foreground":
+    elif not action == "foreground" and len(sys.argv) > 1:
         win32serviceutil.HandleCommandLine(WindowsService)
         return 0
 
@@ -1365,4 +1363,4 @@ def main():
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    sys.exit(main("install"))
