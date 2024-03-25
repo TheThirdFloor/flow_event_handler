@@ -1334,9 +1334,6 @@ def _getConfigPath():
     return CONFIG.path
 
 
-
-
-
 def main(action=None):
     """ """
 
@@ -1363,4 +1360,4 @@ def main(action=None):
 
 
 if __name__ == "__main__":
-    sys.exit(main("install"))
+    sys.exit(main())
