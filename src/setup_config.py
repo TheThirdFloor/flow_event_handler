@@ -1,12 +1,12 @@
 import json
 from pathlib import Path
 
-import event_config
+import handler_config
 
 SETUP_FILENAME = "setup.json"
 
 def write_config(data) -> None:
-    config_path = event_config.getConfigPath()
+    config_path = handler_config.getConfigPath()
 
     print("Writing Config File to %s" % config_path)
     with open(config_path, "w") as json_f:
@@ -25,7 +25,7 @@ def setup() -> None:
     script_dir = Path(__file__).parent
     setup_filepath = script_dir / SETUP_FILENAME
 
-    data = event_config.read_json(setup_filepath)
+    data = handler_config.read_json(setup_filepath)
 
     for key, value in data['service'].items():
         if isinstance(value, str) and value.startswith('..'):
@@ -44,7 +44,7 @@ def setup() -> None:
     write_config(data=data)
 
     # Make the log and plugin dirs if they don't exist
-    config = event_config.Config(event_config.getConfigPath())
+    config = handler_config.Config(handler_config.getConfigPath())
 
     if not config.log_dir.exists():
         print("Creating Log Dir at %s" % str(config.log_dir))

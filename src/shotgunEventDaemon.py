@@ -58,11 +58,11 @@ import daemonizer
 import shotgun_api3 as sg
 from shotgun_api3.lib.sgtimezone import SgTimezone
 
-import event_config
+import handler_config
 
 # We need to run this on import so we can use the service name as a class
 # attribute for the WindowsService
-CONFIG = event_config.Config(event_config.getConfigPath())
+CONFIG = handler_config.Config(handler_config.getConfigPath())
 
 SG_TIMEZONE = SgTimezone()
 
@@ -261,7 +261,7 @@ class Engine(object):
         self._eventIdData = {}
 
         # Read/parse the config
-        self.config = event_config.Config(configPath)
+        self.config = handler_config.Config(configPath)
 
         # Get config values
         self._pluginCollections = [
