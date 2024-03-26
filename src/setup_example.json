@@ -23,8 +23,26 @@
   },
   "plugins": {
     "paths": [
-      "../../plugins"
+      "plugins"
     ]
+  },
+  "api_keys" : {
+    "log_args": {
+      "script_name": "<SCRIPT_NAME>",
+      "script_key": "<SCRIPT_KEY>"
+    },
+    "status_flip_task_from_version": {
+      "script_name": "<SCRIPT_NAME>",
+      "script_key": "<SCRIPT_KEY>"
+    },
+    "user_cleanup": {
+      "script_name": "<SCRIPT_NAME>",
+      "script_key": "<SCRIPT_KEY>"
+    },
+    "project_wrap_cleanup": {
+      "script_name": "<SCRIPT_NAME>",
+      "script_key": "<SCRIPT_KEY>"
+    }
   },
   "email": {
     "server": "smtp.yourdomain.com",
