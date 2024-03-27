@@ -6,7 +6,8 @@ Testing
 Bugfix
 """
 
-import flow_event_handler.src.handler_config as handler_config
+import logging
+import handler_config
 
 PLUGIN_NAME = 'log_args'
 
@@ -34,12 +35,13 @@ def registerCallbacks(reg):
     #   appropriate
     #
 
-    config = scripts_config.Config()
-    script_name = config.get_script_name(PLUGIN_NAME)
-    script_key = config.get_script_key(PLUGIN_NAME)
+    config = handler_config.Config(handler_config.getConfigPath())
+    server_url = config.server_url
+    script_name = config.get_api_script_name(PLUGIN_NAME)
+    script_key = config.get_api_script_key(PLUGIN_NAME)
     #eventFilter = {'Shotgun_Task_Change': ['sg_status_list']}
     eventFilter = None
-    reg.registerCallback(script_name, script_key, logArgs, eventFilter, None)
+    reg.registerCallback(script_name, script_key, log_args, eventFilter, None)
 
     # Set the logging level for this particular plugin. Let error and above
     # messages through but block info and lower. This is particularly usefull
@@ -58,6 +60,11 @@ def log_args(sg, logger, event, args):
     """
 
     logger.info("%s" % str(event))
+    logpath = "C:/flow/ttf/logs/ttf-logArgs.txt"
+
+    if event['project']['name'] == 'Pipe Test Jacob':
+        with open(logpath, "+a") as log_f:
+            log_f.write("\n" + str(event))
 
 
 def test():

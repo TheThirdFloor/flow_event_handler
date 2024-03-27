@@ -1,13 +1,13 @@
 {
   "service": {
-    "name": "<SERVICE NAME HERE>",
-    "description": "<SERVICE NAME HERE>",
+    "name": "SERVICE_NAME_HERE",
+    "description": "SERVICE_NAME_HERE",
     "pid_filename": "{service_name}.pid",
     "event_id_filename": "{service_name}.id",
     "log_mode": 1,
     "log_dir": "../../logs",
     "log_filename": "{service_name}.log",
-    "log_level": "20",
+    "log_level": 20,
     "timing_log": "on",
     "conn_retry_sleep": 60,
     "max_conn_retries": 5,
@@ -16,8 +16,8 @@
   },
   "flow": {
     "server": "https://your.server.com",
-    "script_name": "<SCRIPT NAME HERE>",
-    "script_key": "<SCRIPT KEY HERE>",
+    "script_name": "HANDLER_SCRIPT_NAME_HERE",
+    "script_key": "HANDLER_SCRIPT_KEY_HERE",
     "proxy_server": "",
     "use_session_uuid": true
   },
@@ -28,20 +28,20 @@
   },
   "api_keys" : {
     "log_args": {
-      "script_name": "<SCRIPT_NAME>",
-      "script_key": "<SCRIPT_KEY>"
+      "script_name": "PLUGIN_SCRIPT_NAME",
+      "script_key": "PLUGIN_SCRIPT_KEY"
     },
     "status_flip_task_from_version": {
-      "script_name": "<SCRIPT_NAME>",
-      "script_key": "<SCRIPT_KEY>"
+      "script_name": "PLUGIN_SCRIPT_NAME",
+      "script_key": "PLUGIN_SCRIPT_KEY"
     },
     "user_cleanup": {
-      "script_name": "<SCRIPT_NAME>",
-      "script_key": "<SCRIPT_KEY>"
+      "script_name": "PLUGIN_SCRIPT_NAME",
+      "script_key": "PLUGIN_SCRIPT_KEY"
     },
     "project_wrap_cleanup": {
-      "script_name": "<SCRIPT_NAME>",
-      "script_key": "<SCRIPT_KEY>"
+      "script_name": "PLUGIN_SCRIPT_NAME",
+      "script_key": "PLUGIN_SCRIPT_KEY"
     }
   },
   "email": {
