@@ -36,7 +36,6 @@ def registerCallbacks(reg):
     #
 
     config = handler_config.Config(handler_config.getConfigPath())
-    server_url = config.server_url
     script_name = config.get_api_script_name(PLUGIN_NAME)
     script_key = config.get_api_script_key(PLUGIN_NAME)
     #eventFilter = {'Shotgun_Task_Change': ['sg_status_list']}
@@ -68,8 +67,6 @@ def log_args(sg, logger, event, args):
 
 
 def test():
-
-    import logging
     from shotgun_api3 import Shotgun
 
     logging.basicConfig()

@@ -6,24 +6,28 @@ Ported from TheThirdFloor/pipeline at tag 5.24.1
 
 """
 
+import logging
+import handler_config
 
-SCRIPT_NAME = ''
-SCRIPT_KEY  = ''
-SERVER_URL  = ''
+PLUGIN_NAME = 'project_wrap_cleanup'
 
 
 def registerCallbacks(reg):
+    config = handler_config.Config(handler_config.getConfigPath())
+    script_name = config.get_api_script_name(PLUGIN_NAME)
+    script_key = config.get_api_script_key(PLUGIN_NAME)
+
     eventsFilter = {
         'Shotgun_Project_Change': ['sg_status']
     }
     
     # Register the event to the daemon
-    reg.registerCallback(SCRIPT_NAME, SCRIPT_KEY, cleanup_project,
+    reg.registerCallback(script_name, script_key, project_wrap_cleanup,
                          eventsFilter, None)
     reg.logger.setLevel(logging.INFO)
 
 
-def cleanup_project(sg, logger, event, args):
+def project_wrap_cleanup(sg, logger, event, args):
 
     if not event['entity']:
         return
@@ -84,20 +88,22 @@ def cleanup_project(sg, logger, event, args):
         sg.update("HumanUser", member['id'], new_data)
 
 
-
-
-if __name__ == "__main__":
-    import logging
+def test():
     from shotgun_api3 import Shotgun
     
     logging.basicConfig()
-    logger = logging.getLogger("project_wrap_cleanup")
+    logger = logging.getLogger(PLUGIN_NAME)
     logger.setLevel(logging.DEBUG)
+
+    config = handler_config.Config(handler_config.getConfigPath())
+    server_url = config.server_url
+    script_name = config.get_api_script_name(PLUGIN_NAME)
+    script_key = config.get_api_script_key(PLUGIN_NAME)
     
-    sg = Shotgun(SERVER_URL, SCRIPT_NAME, SCRIPT_KEY)
+    sg = Shotgun(server_url, script_name, script_key)
     
     # A single event
-    event_id = 7697139
+    event_id = 10870065
 
     filters = [
              ['id', 'is', event_id]
@@ -115,4 +121,7 @@ if __name__ == "__main__":
               ]
     
     event = sg.find_one('EventLogEntry', filters, fields)
-    cleanup_project(sg, logger, event, None)
+    project_wrap_cleanup(sg, logger, event, None)
+
+if __name__ == "__main__":
+    test()
