@@ -6,7 +6,7 @@ Testing
 Bugfix
 """
 
-from scripts_config import scripts_config
+import flow_event_handler.src.handler_config as handler_config
 
 PLUGIN_NAME = 'log_args'
 
@@ -69,10 +69,10 @@ def test():
     logger = logging.getLogger(PLUGIN_NAME)
     logger.setLevel(logging.DEBUG)
 
-    config = scripts_config.Config()
+    config = handler_config.Config(handler_config.getConfigPath())
     server_url = config.server_url
-    script_name = config.get_script_name(PLUGIN_NAME)
-    script_key = config.get_script_key(PLUGIN_NAME)
+    script_name = config.get_api_script_name(PLUGIN_NAME)
+    script_key = config.get_api_script_key(PLUGIN_NAME)
 
     sg = Shotgun(server_url, script_name, script_key)
 
