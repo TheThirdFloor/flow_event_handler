@@ -9,7 +9,7 @@ Ported from TheThirdFloor/pipeline at tag 5.24.1
 import logging
 import handler_config
 
-PLUGIN_NAME = 'task_status_to_version_status'
+PLUGIN_NAME = 'version_task_status_sync'
 
 
 def registerCallbacks(reg):
@@ -24,10 +24,10 @@ def registerCallbacks(reg):
 
     # Register the event to the daemon
     reg.registerCallback(script_name, script_key,
-                         task_status_to_version_status, event_filter, None)
+                         version_task_status_sync, event_filter, None)
 
 
-def task_status_to_version_status(sg, logger, event, args):
+def version_task_status_sync(sg, logger, event, args):
     """Flip downstream Tasks to 'rdy' if all of their upstream Tasks are 'cmpt'"""
     
     # Check that the event is linked to something we can process
@@ -104,7 +104,7 @@ def test():
               ]
 
     event = sg.find_one('EventLogEntry', filters, fields)
-    task_status_to_version_status(sg, logger, event, None)
+    version_task_status_sync(sg, logger, event, None)
 
 if __name__ == "__main__":
     test()

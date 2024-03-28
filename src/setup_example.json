@@ -31,7 +31,7 @@
       "script_name": "PLUGIN_SCRIPT_NAME",
       "script_key": "PLUGIN_SCRIPT_KEY"
     },
-    "task_status_to_version_status": {
+    "version_task_status_sync": {
       "script_name": "PLUGIN_SCRIPT_NAME",
       "script_key": "PLUGIN_SCRIPT_KEY"
     },
