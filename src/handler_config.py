@@ -51,6 +51,15 @@ class Config(object):
         return self._data.get('plugins', {})
 
     @property
+    def api_keys(self) -> dict:
+        """
+        Api Script Names and Script Keys to connect to Flow/SG instance
+
+        """
+
+        return self._data.get('api_keys', {})
+
+    @property
     def email(self) -> dict:
         """
         Email notification settings. These are used for error reporting because
@@ -64,6 +73,15 @@ class Config(object):
         """
 
         return self._data.get('email', {})
+
+    @property
+    def server_url(self):
+        """
+        Web URL of Flow Production Tracking server
+
+        """
+
+        return self.flow.get('server')
 
     @property
     def log_dir(self) -> Path:
@@ -155,13 +173,21 @@ class Config(object):
     def read(self, path) -> None:
         self._data = read_json(path)
 
+    def get_api_script_name(self, plugin) -> str:
+
+        return self.api_keys[plugin]['script_name']
+
+    def get_api_script_key(self, plugin) -> str:
+
+        return self.api_keys[plugin]['script_key']
+
     def getShotgunURL(self) -> str:
         """
         The Shotgun url the event processing framework should connect to.
 
         """
 
-        return self.flow.get('server')
+        return self.server_url
 
     def getEngineScriptName(self) -> str:
         """
@@ -444,8 +470,20 @@ def test():
         msg = msg.format(method=method, result=attr())
         print(msg)
 
-    from pprint import pprint as pp
-    pp(config.data)
+    plugin_api_keys_test = [
+        'log_args'
+    ]
+
+    for plugin in plugin_api_keys_test:
+        script_name = config.get_api_script_name(plugin)
+        script_key = config.get_api_script_key(plugin)
+        msg = "Testing [{plugin}]: {script_name} {script_key}"
+        msg = msg.format(
+            plugin=plugin,
+            script_name=script_name,
+            script_key=script_key
+        )
+        print(msg)
 
 
 if __name__ == "__main__":

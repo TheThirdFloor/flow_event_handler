@@ -1,13 +1,34 @@
 Save the setup_example.json file as setup.json in the src directory.
     setup.json is not tracked by the git repo
 
-Update all <VALUES> to configure the event handler.
+Update all VALUES to configure the event handler.
     Example:
-        "name": "<SERVICE NAME HERE>" --> "name": "ttfsecure_event_handler"
+        "name": "SERVICE NAME HERE" --> "name": "Flow_Event_Handler_TTF"
 
-Run 'python ./setup_config.py' to setup the config the first time.
+For the plugins, you must create api keys on the Flow/SG server you wish to run
+them on.  In the api_keys section of setup.json, you will see a list of the
+plugins and their corresponding api keys which can be used in Flow/SG. For each
+plugin, create a new Script.  Use a unique name to make it easily identifiable,
+usually the plugin name with the name of the machine appended.
+    Example:
+        "user_cleanup": {
+            "script_name": "user_cleanup_wks217",
+            "script_key": "<copy/paste from the Create Script dialog>"
+        }
+
+For the email section, this is the account that will be used to send notifications
+if/when the event handler fails to connect or if the plugin errors.  Emails will
+blast every 30 seconds when this happens until it is resolved.  By default the
+name of the server URL will be in the subject line, and it is recommended to
+update MACHINE_NAME with the name of the machine the service is running on in
+order to easily identify it.
+
+For full details of all of the values in the config, see handler_config.py
+
+Once the setup.json is fully prepped, run 'python ./setup_config.py'
     This will create a config.json file with any relative paths resolved.
     config.json is not tracked by the git repo
+    config.json is read by the live service and plugins.  setup.json is not
 
 Run 'python ./shotgunEventDaemon.py install' to install the service.
 
@@ -18,3 +39,9 @@ Run 'python ./shotgunEventDaemon.py start' to start the service.
 Run 'python ./shotgunEventDaemon.py stop' to stop the service.
 
 Run 'python ./shotgunEventDaemon.py remove' to remove the service.
+
+In the event that any values in the config need to change, the best thing to do
+is update the setup.json, stop the service, run setup_config.py again, and then
+start the service.  It is not necessary to remove and reinstall the service
+for most config changes.  However, if you do want to change the service_name, then you
+do need to remove and reinstall.
