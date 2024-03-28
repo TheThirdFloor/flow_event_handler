@@ -59,11 +59,6 @@ def log_args(sg, logger, event, args):
     """
 
     logger.info("%s" % str(event))
-    logpath = "C:/flow/ttf/logs/ttf-logArgs.txt"
-
-    if event['project']['name'] == 'Pipe Test Jacob':
-        with open(logpath, "+a") as log_f:
-            log_f.write("\n" + str(event))
 
 
 def test():
