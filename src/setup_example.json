@@ -54,6 +54,6 @@
     "to": [
       "you@yourdomain.com"
     ],
-    "subject": "{server} - {script_name} - Flow Event Handler"
+    "subject": "{server} - MACHINE_NAME - Flow Event Handler"
   }
 }
