@@ -45,15 +45,15 @@
     }
   },
   "email": {
-    "server": "smtp.yourdomain.com",
+    "server": "smtp.gmail.com",
     "port": 587,
     "use_tls": true,
-    "username": "username",
+    "username": "TTF-LAX-SRVC-Pipeline@thethirdfloorinc.com",
     "password": "password",
-    "from": "support@yourdomain.com",
+    "from": "TTF-LAX-SRVC-Pipeline@thethirdfloorinc.com",
     "to": [
-      "you@yourdomain.com"
+      "pipeline-internal@thethirdfloorinc.com"
     ],
-    "subject": "{server} - MACHINE_NAME - Flow Event Handler"
+    "subject": "SITE_NAME - MACHINE_NAME - Flow Event Handler"
   }
 }
