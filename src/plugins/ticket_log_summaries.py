@@ -16,7 +16,7 @@ _INJECT_PATH = _THIS_PATH.parent.as_posix()
 if _INJECT_PATH not in set(sys.path):
     sys.path.insert(0, _INJECT_PATH)
 
-from plugins._ticket_log_summaries import protocols, log_summary
+from _ticket_log_summaries import protocols, log_summary
 
 _PLUGIN_NAME: Final[str] = 'ticket_log_summaries'
 _EVENT_FILTER: Final[MappingProxyType] = MappingProxyType(
